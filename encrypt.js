@@ -2,25 +2,26 @@ const crypto = require("crypto");
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
 
+// Setup encryption keys and constants
 const SECRET_KEY = process.env.JWT_SECRET || "supersecretkey";
 const ENCRYPTION_KEY = crypto.scryptSync(process.env.ENCRYPTION_SECRET || "encryptionkey", "salt", 32);
-const IV_LENGTH = 16; // Initialization vector length
+const IV_LENGTH = 16; // Initialization Vector size
 
-// Encrypt function: Generates JWT and encrypts it
+// Encrypt the payload and return the token
 const encrypt = (payload) => {
     try {
-        // Generate JWT token
+        // Create a JWT token
         const token = jwt.sign(payload, SECRET_KEY, { expiresIn: "1h" });
 
         // Generate IV
         const iv = crypto.randomBytes(IV_LENGTH);
         const cipher = crypto.createCipheriv("aes-256-cbc", ENCRYPTION_KEY, iv);
 
-        // Encrypt token
+        // Encrypt the token
         let encrypted = cipher.update(token, "utf8", "hex");
         encrypted += cipher.final("hex");
 
-        // Return IV + encrypted token as a single string
+        // Return IV + encrypted token
         return iv.toString("hex") + encrypted;
     } catch (error) {
         console.error("Encryption failed:", error);
@@ -28,7 +29,7 @@ const encrypt = (payload) => {
     }
 };
 
-// Decrypt function: Decrypts token and verifies JWT
+// Decrypt the encrypted token and return the original payload
 const decrypt = (encryptedToken) => {
     try {
         // Extract IV and encrypted token
@@ -37,7 +38,7 @@ const decrypt = (encryptedToken) => {
 
         const decipher = crypto.createDecipheriv("aes-256-cbc", ENCRYPTION_KEY, iv);
 
-        // Decrypt token
+        // Decrypt the token
         let decrypted = decipher.update(encryptedText, "hex", "utf8");
         decrypted += decipher.final("utf8");
 
@@ -49,7 +50,4 @@ const decrypt = (encryptedToken) => {
     }
 };
 
-module.exports = {
-    encrypt,
-    decrypt
-};
+module.exports = { encrypt, decrypt };

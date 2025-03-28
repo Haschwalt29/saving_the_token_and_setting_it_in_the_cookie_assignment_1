@@ -3,6 +3,18 @@
     "start": "servor --reload"
   },
   "dependencies": {
+    "crypto": "^1.0.1",
+    "dotenv": "^16.4.7",
+    "encrypt": "^0.0.1",
+    "express": "^4.21.2",
+    "jsonwebtoken": "^9.0.2",
     "servor": "^4.0.2"
-  }
+  },
+  "name": "saving_the_token_and_setting_it_in_the_cookie_assignment_1",
+  "version": "1.0.0",
+  "description": "- Understand the process of JWT token encryption and decryption for secure data transmission.",
+  "main": "script.js",
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
 }
